@@ -68,6 +68,7 @@ Here the imperfect results of my findings:
 
 - Error handlings is managed by try/except approach and a set of dedicated functions returning HTTP statuses in JSON format
 - Tests are done with [pytest](https://docs.pytest.org) and associated libraries for Flask and Alchemy.
+- Git, Github and GitKraken are the tools used to handle the project repository.In this context, I worked directly in main branch but ideally developers should work on feature/fix/chore branches, go though code review then merge/rebase depending of the Git workflow promoted within the team.
 
 ## OpenAPI schema
 
