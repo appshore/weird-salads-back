@@ -3,29 +3,49 @@ info:
   title: Weird Salads API
   version: 1.0.0
 
+servers:
+  - url: "/api"
+
 components:
   schemas:
     Staff:
       type: object
+      x-tablename: staff
       properties:
-        staff_id:
+        id:
           type: integer
+          x-primary-key: true
+          x-autoincrement: true
         name:
           type: string
         dob:
-          type: string 
-        role_id:
-          type: integer
+          type: string
+        role:
+          "$ref": "#/components/schemas/Role"
         iban:
           type: string
         bic:
           type: string
 
+    Role:
+      type: object
+      x-tablename: role
+      properties:
+        id:
+          type: integer
+          x-primary-key: true
+          x-autoincrement: true
+        name:
+          type: string
+
     Location:
       type: object
+      x-tablename: location
       properties:
-        location_id:
+        id:
           type: integer
+          x-primary-key: true
+          x-autoincrement: true
         name:
           type: string
         address:
@@ -33,9 +53,12 @@ components:
 
     Ingredient:
       type: object
+      x-tablename: ingredient
       properties:
-        ingredient_id:
+        id:
           type: integer
+          x-primary-key: true
+          x-autoincrement: true
         name:
           type: string
         unit:
@@ -45,9 +68,12 @@ components:
 
     Modifier:
       type: object
+      x-tablename: modifier
       properties:
-        modifier_id:
+        id:
           type: integer
+          x-primary-key: true
+          x-autoincrement: true
         name:
           type: string
         option:
@@ -57,81 +83,121 @@ components:
 
     Recipe:
       type: object
+      x-tablename: recipe
       properties:
-        recipe_id:
+        id:
           type: integer
+          x-primary-key: true
+          x-autoincrement: true
         name:
           type: string
 
     Menu:
       type: object
+      x-tablename: menu
       properties:
-        menu_id:
+        id:
           type: integer
-        recipe_id:
-          type: integer
-        location_id:
-          type: integer
+          x-primary-key: true
+          x-autoincrement: true
+        recipe:
+          "$ref": "#/components/schemas/Recipe"
+        location:
+          "$ref": "#/components/schemas/Location"
         price:
           type: number
 
 paths:
+  /staff:
+    get:
+      summary: Retrieve all staff
+      operationId: "app.staff.get_all"
+      tags:
+        - "Staff"
+      responses:
+        "200":
+          description: All staff retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Staff"
 
-  /staff/{staff_id}:
+  /staff/{id}:
     get:
       summary: Retrieve staff profile by ID
+      operationId: "app.staff.get_one"
+      tags:
+        - "Staff"
       parameters:
         - in: path
-          name: staff_id
+          name: id
           required: true
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Staff profile retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Staff'
+                $ref: "#/components/schemas/Staff"
 
-  /staff/{staff_id}/authorized-locations:
+  /ingredients:
     get:
-      summary: Retrieve list of authorized locations for a staff member
-      parameters:
-        - in: path
-          name: staff_id
-          required: true
-          schema:
-            type: integer
+      summary: Get all ingredients
+      operationId: "app.ingredients.get_all"
+      tags:
+        - "Ingredients"
       responses:
-        '200':
-          description: List of authorized locations retrieved successfully
+        "201":
+          description: All ingredients retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Location'
-
-  /ingredients:
+                $ref: "#/components/schemas/Ingredient"
     post:
       summary: Create a new ingredient
+      operationId: "app.ingredients.create_one"
+      tags:
+        - "Ingredients"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Ingredient'
+              $ref: "#/components/schemas/Ingredient"
       responses:
-        '201':
+        "201":
           description: Ingredient created successfully
 
-  /ingredients/{ingredient_id}:
-    put:
-      summary: Update an ingredient
+  /ingredients/{id}:
+    get:
+      summary: Get an ingredient by identifier
+      operationId: "app.ingredients.get_one"
+      tags:
+        - "Ingredients"
       parameters:
         - in: path
-          name: ingredient_id
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: All ingredients retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+
+    put:
+      summary: Update an ingredient
+      operationId: "app.ingredients.update_one"
+      tags:
+        - "Ingredients"
+      parameters:
+        - in: path
+          name: id
           required: true
           schema:
             type: integer
@@ -140,33 +206,39 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Ingredient'
+              $ref: "#/components/schemas/Ingredient"
       responses:
-        '200':
+        "200":
           description: Ingredient updated successfully
 
-  /recipes/{recipe_id}/check-sale:
-    post:
-      summary: Check if a recipe can be sold (ingredients and modifiers availability)
+  /recipes/{id}/check:
+    get:
+      summary: Check a recipe can be sold if associated ingredients and modifiers are available
+      operationId: "app.recipes.check_one"
+      tags:
+        - "Recipes"
       parameters:
         - in: path
-          name: recipe_id
+          name: id
           required: true
           schema:
             type: integer
       responses:
-        '200':
-          description: Recipe can be sold
+        "200":
+          description: Recipe is available
 
-  /recipes/{recipe_id}/sell:
-    post:
+  /recipes/{id}/sell:
+    put:
       summary: Sell a recipe (update ingredient inventory)
+      operationId: "app.recipes.sell_one"
+      tags:
+        - "Recipes"
       parameters:
         - in: path
-          name: recipe_id
+          name: id
           required: true
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Recipe sold successfully
