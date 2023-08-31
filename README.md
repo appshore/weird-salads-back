@@ -6,7 +6,7 @@ Instead of jumping directly to the coding phase, I spent some time trying to und
 
 I approached the documents (description and spreadsheet) as the draft of specifications produced by a product manager/owner or a stakeholder who expects from the tech team some help to make the specs ready for dev.
 
-Lot of information is provided, too much in fact and it scrambles a bit what is expected in term of final result. Developers with different background might produce a different outcome which makes the benchmark a bit fuzzy. I would recommend to add a set of steps to be deliver in order.
+Lot of information is provided, too much in fact and it scrambles a bit what is expected in term of final result. Developers with different background might produce a different outcome which makes the benchmark a bit fuzzy. I would recommend to add a set of steps to be delivered in order or to reduce the scope.
 
 Some points need clarification and can be hard to understand for a person foreign to the restaurant world. Modifiers is a good example:
 
