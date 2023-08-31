@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Weird Salads API
+  version: 1.0.0
+
+components:
+  schemas:
+    Staff:
+      type: object
+      properties:
+        staff_id:
+          type: integer
+        name:
+          type: string
+        dob:
+          type: string 
+        role_id:
+          type: integer
+        iban:
+          type: string
+        bic:
+          type: string
+
+    Location:
+      type: object
+      properties:
+        location_id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+
+    Ingredient:
+      type: object
+      properties:
+        ingredient_id:
+          type: integer
+        name:
+          type: string
+        unit:
+          type: string
+        cost:
+          type: number
+
+    Modifier:
+      type: object
+      properties:
+        modifier_id:
+          type: integer
+        name:
+          type: string
+        option:
+          type: string
+        price:
+          type: number
+
+    Recipe:
+      type: object
+      properties:
+        recipe_id:
+          type: integer
+        name:
+          type: string
+
+    Menu:
+      type: object
+      properties:
+        menu_id:
+          type: integer
+        recipe_id:
+          type: integer
+        location_id:
+          type: integer
+        price:
+          type: number
+
+paths:
+
+  /staff/{staff_id}:
+    get:
+      summary: Retrieve staff profile by ID
+      parameters:
+        - in: path
+          name: staff_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Staff profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+
+  /staff/{staff_id}/authorized-locations:
+    get:
+      summary: Retrieve list of authorized locations for a staff member
+      parameters:
+        - in: path
+          name: staff_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of authorized locations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+
+  /ingredients:
+    post:
+      summary: Create a new ingredient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+      responses:
+        '201':
+          description: Ingredient created successfully
+
+  /ingredients/{ingredient_id}:
+    put:
+      summary: Update an ingredient
+      parameters:
+        - in: path
+          name: ingredient_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+      responses:
+        '200':
+          description: Ingredient updated successfully
+
+  /recipes/{recipe_id}/check-sale:
+    post:
+      summary: Check if a recipe can be sold (ingredients and modifiers availability)
+      parameters:
+        - in: path
+          name: recipe_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recipe can be sold
+
+  /recipes/{recipe_id}/sell:
+    post:
+      summary: Sell a recipe (update ingredient inventory)
+      parameters:
+        - in: path
+          name: recipe_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recipe sold successfully
